@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="WeatherApp.css" />
+    <title>WeatherApp</title>
+  </head>
+  <body>
+    <table>
+      <thead>
+        <tr>
+          <th id="heading" colspan="2">What's the Weather?</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr>
+          <td><label class="tabletext"> </label></td>
+          <td id="searchResults" class="tabletext">Today's Weather</td>
+        </tr>
+
+        <tr>
+          <td>
+            <form>
+              <input
+                type="text"
+                id="city"
+                width="100px"
+                placeholder="Please Enter City Name"
+                autocomplete="off"
+              />
+            </form>
+          </td>
+          <td>
+            <img
+              src="https://www.seekpng.com/png/detail/133-1330400_weather-icon-png-image-transparent-background-weather-icon.png"
+              alt="Weather Icon"
+              width="100px"
+            />
+          </td>
+        </tr>
+
+        <tr>
+          <td>
+            <button value="search" id="citySearching" input type="submit">
+              Search
+            </button>
+          </td>
+          <td class="tabletext" id="searchedCityTemp"></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <br />
+    <br />
+    <h3 id="currently"></h3>
+    <br />
+
+    <div id="forecast">
+      <article class="card" id="Day1">
+        <header>
+          <h2>Day of the Week</h2>
+        </header>
+        <img
+          src="https://www.seekpng.com/png/detail/133-1330400_weather-icon-png-image-transparent-background-weather-icon.png"
+          alt="Weather Icon"
+          width="100px"
+        />
+        <div class="content">
+          <p>Temperature</p>
+        </div>
+        <footer>Description</footer>
+      </article>
+
+      <article class="card" id="Day2">
+        <header>
+          <h2>Day of the Week</h2>
+        </header>
+        <img
+          src="https://www.seekpng.com/png/detail/133-1330400_weather-icon-png-image-transparent-background-weather-icon.png"
+          alt="Weather Icon"
+          width="100px"
+        />
+        <div class="content">
+          <p>Temperature</p>
+        </div>
+        <footer>Description</footer>
+      </article>
+
+      <article class="card" id="Day3">
+        <header>
+          <h2>Day of the Week</h2>
+        </header>
+        <img
+          src="https://www.seekpng.com/png/detail/133-1330400_weather-icon-png-image-transparent-background-weather-icon.png"
+          alt="WeatherIcon"
+          width="100px"
+        />
+        <div class="content">
+          <p>Temperature</p>
+        </div>
+        <footer>Description</footer>
+      </article>
+
+      <article class="card" id="Day4">
+        <header>
+          <h2>Day of the Week</h2>
+        </header>
+        <img
+          src="https://www.seekpng.com/png/detail/133-1330400_weather-icon-png-image-transparent-background-weather-icon.png"
+          alt="Weather Icon"
+          width="100px"
+        />
+        <div class="content">
+          <p>Temperature</p>
+        </div>
+        <footer>Description</footer>
+      </article>
+
+      <article class="card" id="Day5">
+        <header>
+          <h2>Day of the Week</h2>
+        </header>
+        <img
+          src="https://www.seekpng.com/png/detail/133-1330400_weather-icon-png-image-transparent-background-weather-icon.png"
+          alt="Weather Icon"
+          width="100px"
+        />
+        <div class="content">
+          <p>Temperature</p>
+        </div>
+        <footer>Description</footer>
+      </article>
+    </div>
+
+    <script>
+      let now = new Date();
+      let date = now.getDate();
+      let year = now.getFullYear();
+      let hours = now.getHours();
+      let minutes = now.getMinutes();
+
+      let days = [
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+      ];
+
+      let day = days[now.getDay()];
+
+      let months = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+      ];
+
+      let month = months[now.getMonth()];
+
+      let currently = document.querySelector("#currently");
+      currently.innerHTML = `Currently, it is ${day}, ${month} ${date}, ${year}. The time is ${hours}:${minutes}.`;
+
+      let button = document.querySelector("#citySearching");
+      button.addEventListener("click", searching);
+
+      document
+        .querySelector("#city")
+        .addEventListener("keypress", function (e) {
+          if (e.key === "Enter") {
+            searching(event);
+          }
+        });
+
+      let enteredCity = document.querySelector("#city");
+
+      function searching(event) {
+        event.preventDefault();
+        let searchResults = document.querySelector("#searchResults");
+        searchResults.innerHTML = `Today in ${enteredCity.value}:`;
+        let apiKey = "f9de746b9d23a9c915974277fc1710ae";
+        let apiUrl = `https://api.openweathermap.org/data/2.5/weather?`;
+        axios
+          .get(`${apiUrl}q=${enteredCity.value}&appid=${apiKey}&units=imperial`)
+          .then(cityTemp);
+      }
+
+      function cityTemp(response) {
+        let temperature = Math.round(response.data.main.temp);
+        let temperatureElement = document.querySelector("#searchedCityTemp");
+        temperatureElement.innerHTML = `${temperature}°F`;
+      }
+    </script>
+  </body>
+</html>
